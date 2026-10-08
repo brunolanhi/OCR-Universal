@@ -77,12 +77,14 @@ Large OCR workloads:
 Update system:
 
 bash
+
 apt update
 apt upgrade -y
 
 Install required packages:
 
 bash
+
 apt install -y \
 python3 \
 python3-pip \
@@ -100,6 +102,7 @@ nginx
 Verify installation:
 
 bash
+
 tesseract --version
 ocrmypdf --version
 libreoffice --version
@@ -109,6 +112,7 @@ libreoffice --version
 # Clone Project
 
 bash
+
 git clone https://github.com/brunolanhi/ocr-universal.git
 
 cd ocr-universal
@@ -118,6 +122,7 @@ cd ocr-universal
 # Create Virtual Environment
 
 bash
+
 python3 -m venv venv
 
 source venv/bin/activate
@@ -127,6 +132,7 @@ source venv/bin/activate
 # Install Python Dependencies
 
 bash
+
 pip install -r requirements.txt
 
 ---
