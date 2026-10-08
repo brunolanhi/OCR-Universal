@@ -88,11 +88,13 @@ required>
 
 <select name="idioma">
 
-<option value="por">Português</option>
-<option value="ita">Italiano</option>
-<option value="eng">Inglês</option>
-<option value="spa">Espanhol</option>
-<option value="fra">Francês</option>
+{% for idioma in idiomas %}
+
+<option value="{{ idioma }}">
+{{ idioma }}
+</option>
+
+{% endfor %}
 
 </select>
 

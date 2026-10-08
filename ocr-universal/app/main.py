@@ -1,4 +1,3 @@
-from fastapi.responses import RedirectResponse
 from worker import processar_job
 from fastapi import BackgroundTasks
 from pdf_generator import (
@@ -44,12 +43,10 @@ async def home(request: Request):
 
     outputs = BASE_DIR / "outputs"
 
-    arquivos = sorted(
+    for arquivo in sorted(
         outputs.glob("*.zip"),
-        key=lambda x: x.stat().st_mtime,
         reverse=True
-    )
-    for arquivo in arquivos:
+    ):
 
         data = datetime.fromtimestamp(
             arquivo.stat().st_mtime
@@ -84,21 +81,223 @@ async def upload_file(
     destino = UPLOAD_DIR / f"{job_id}_{arquivo.filename}"
 
     with open(destino, "wb") as buffer:
+        background_tasks.add_task(
+            processar_job,
+            job_id,
+            destino,
+            idioma
+        )
         shutil.copyfileobj(
             arquivo.file,
             buffer
         )
-    background_tasks.add_task(
-        processar_job,
-        job_id,
+    if destino.suffix.lower() == ".zip":
+
+        pasta_extraida = (
+            BASE_DIR
+            / "temp"
+            / job_id
+        )
+
+        pasta_extraida.mkdir(
+            parents=True,
+            exist_ok=True
+        )
+
+        extrair_zip(
+            destino,
+            pasta_extraida
+        )
+
+        arquivos = localizar_arquivos(
+            pasta_extraida
+        )
+
+        print(
+            f"Arquivos encontrados: {len(arquivos)}"
+        )
+        job_dir = (
+            BASE_DIR
+            / "outputs"
+            / job_id
+        )
+
+        job_dir.mkdir(
+            parents=True,
+            exist_ok=True
+        )
+        status_file = (
+            job_dir
+            / "status.json"
+        )
+
+        salvar_status(
+            status_file,
+            "processando",
+            len(arquivos),
+            0
+        )
+
+        texto = ""
+
+        for indice, arq in enumerate(
+
+            arquivos,
+            start=1
+        ):
+            print(
+                f"Processando: {arq}"
+            )
+
+            texto += imagem_para_texto(
+                arq,
+                idioma
+            )
+
+            texto += "\n\n"
+
+            salvar_status(
+                status_file,
+                "processando",
+                len(arquivos),
+                indice
+            )
+
+        saida_txt = (
+            job_dir
+            / "resultado.txt"
+        )
+
+        gerar_txt(
+            texto,
+            saida_txt
+        )
+
+        saida_docx = (
+            job_dir
+            / "resultado.docx"
+        )
+
+        gerar_docx(
+            texto,
+            saida_docx
+        )
+        pdf_original = (
+            job_dir
+            / "original.pdf"
+        )
+
+        imagens_para_pdf(
+            arquivos,
+            pdf_original
+        )
+
+        saida_pdf = (
+            job_dir
+            / "resultado.pdf"
+        )
+
+        gerar_pdf_pesquisavel(
+            pdf_original,
+            saida_pdf,
+            idioma
+        )
+
+        if pdf_original.exists():
+            pdf_original.unlink()
+
+        zip_saida = (
+            BASE_DIR
+            / "outputs"
+            / f"{job_id}.zip"
+        )
+
+        compactar_pasta(
+            job_dir,
+            zip_saida
+        )
+        salvar_status(
+            status_file,
+            "concluido",
+            len(arquivos),
+            len(arquivos)
+        )
+        return templates.TemplateResponse(
+            request=request,
+            name="sucesso.html",
+            context={
+                "request": request,
+                "arquivo": arquivo.filename,
+                "job_id": job_id
+            }
+        )
+    texto = imagem_para_texto(
         destino,
         idioma
     )
-    return RedirectResponse(
-        url=f"/progresso/{job_id}",
-        status_code=303
+
+    job_dir = (
+        BASE_DIR
+        / "outputs"
+        / job_id
     )
 
+    job_dir.mkdir(
+        parents=True,
+        exist_ok=True
+    )
+
+    saida_txt = (
+        job_dir
+        / "resultado.txt"
+    )
+
+    gerar_txt(
+        texto,
+        saida_txt
+    )
+
+    saida_docx = (
+        job_dir
+        / "resultado.docx"
+    )
+
+    gerar_docx(
+        texto,
+        saida_docx
+    )
+
+    saida_pdf = (
+        job_dir
+        / "resultado.pdf"
+    )
+
+    gerar_pdf_pesquisavel(
+        destino,
+        saida_pdf,
+        idioma
+    )
+
+    zip_saida = (
+        BASE_DIR
+        / "outputs"
+        / f"{job_id}.zip"
+    )
+
+    compactar_pasta(
+        job_dir,
+        zip_saida
+    )
+
+    return templates.TemplateResponse(
+        request=request,
+        name="sucesso.html",
+        context={
+            "request": request,
+            "arquivo": arquivo.filename,
+            "job_id": job_id
+        }
+    )
 @app.get("/download/{job_id}")
 async def download(job_id: str):
 
@@ -125,13 +324,10 @@ async def jobs(request: Request):
 
     outputs = BASE_DIR / "outputs"
 
-    arquivos = sorted(
+    for arquivo in sorted(
         outputs.glob("*.zip"),
-        key=lambda x: x.stat().st_mtime,
         reverse=True
-    )
-
-    for arquivo in arquivos:
+    ):
 
         data = datetime.fromtimestamp(
             arquivo.stat().st_mtime

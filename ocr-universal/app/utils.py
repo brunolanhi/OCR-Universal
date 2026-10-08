@@ -85,3 +85,21 @@ def salvar_status(
             f,
             ensure_ascii=False
         )
+from pathlib import Path
+
+
+def listar_idiomas():
+
+    pasta = Path(
+        "/usr/share/tesseract-ocr/5/tessdata"
+    )
+
+    idiomas = []
+
+    for arquivo in pasta.glob("*.traineddata"):
+
+        idiomas.append(
+            arquivo.stem
+        )
+
+    return sorted(idiomas)
