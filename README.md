@@ -135,7 +135,7 @@ pip install -r requirements.txt
 
 text
 ocr-universal/
-
+ 
 app/
 ├── cleanup.py
 ├── generators.py
@@ -146,16 +146,21 @@ app/
 ├── worker.py
 │
 ├── templates/
-│   ├── index.html
-│   ├── jobs.html
-│   ├── progresso.html
-│   └── sucesso.html
+│ ├── index.html
+│ ├── jobs.html
+│ ├── progresso.html
+│ └── sucesso.html
 │
 ├── uploads/
 ├── outputs/
 ├── temp/
+├── static/
 │
-└── static/
+└── __pycache__/
+ 
+requirements.txt
+README.md
+.gitignore
 
 ---
 
@@ -164,10 +169,12 @@ app/
 Activate environment:
 
 bash
+
 source venv/bin/activate
 
 Start application:
 bash
+
 cd app
 
 uvicorn main:app --host 0.0.0.0 --port 8000
@@ -184,6 +191,7 @@ http://SERVER_IP:8000
 Create:
 
 bash
+
 nano /etc/systemd/system/ocr-universal.service
 
 Content:
@@ -207,11 +215,13 @@ ExecStart=/opt/ocr-universal/venv/bin/uvicorn main:app --host 127.0.0.1 --port 8
 Restart=always
 
 [Install]
+
 WantedBy=multi-user.target
 
 Enable service:
 
 bash
+
 systemctl daemon-reload
 
 systemctl enable ocr-universal
@@ -221,6 +231,7 @@ systemctl start ocr-universal
 Check status:
 
 bash
+
 systemctl status ocr-universal
 
 ---
@@ -230,11 +241,11 @@ systemctl status ocr-universal
 Create:
 
 bash
+
 nano /etc/nginx/sites-available/ocr-universal
 
 Content:
 
-nginx
 server {
 
     listen 80;
@@ -256,6 +267,7 @@ server {
 Enable:
 
 bash
+
 ln -s \
 /etc/nginx/sites-available/ocr-universal \
 /etc/nginx/sites-enabled/
@@ -263,16 +275,19 @@ ln -s \
 Remove default:
 
 bash
+
 rm -f /etc/nginx/sites-enabled/default
 
 Validate:
 
 bash
+
 nginx -t
 
 Restart:
 
 bash
+
 systemctl restart nginx
 
 ---
@@ -282,6 +297,7 @@ systemctl restart nginx
 Edit crontab:
 
 bash
+
 crontab -e
 
 Add:
