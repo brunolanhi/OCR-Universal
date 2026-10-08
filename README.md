@@ -360,12 +360,19 @@ Available examples:
 bash
 
 apt install tesseract-ocr-por
+
 apt install tesseract-ocr-eng
+
 apt install tesseract-ocr-ita
+
 apt install tesseract-ocr-spa
+
 apt install tesseract-ocr-fra
+
 apt install tesseract-ocr-deu
+
 apt install tesseract-ocr-rus
+
 apt install tesseract-ocr-jpn
 
 After installation, languages automatically appear in the OCR Universal interface without code changes.
