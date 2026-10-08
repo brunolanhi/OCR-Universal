@@ -135,9 +135,8 @@ pip install -r requirements.txt
 
 text
 ocr-universal/
-
+ 
 app/
-
 ├── cleanup.py
 ├── generators.py
 ├── main.py
@@ -147,16 +146,21 @@ app/
 ├── worker.py
 │
 ├── templates/
-│   ├── index.html
-│   ├── jobs.html
-│   ├── progresso.html
-│   └── sucesso.html
+│ ├── index.html
+│ ├── jobs.html
+│ ├── progresso.html
+│ └── sucesso.html
 │
 ├── uploads/
 ├── outputs/
 ├── temp/
+├── static/
 │
-└── static/
+└── __pycache__/
+ 
+requirements.txt
+README.md
+.gitignore
 
 ---
 
