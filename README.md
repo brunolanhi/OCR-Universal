@@ -234,7 +234,6 @@ nano /etc/nginx/sites-available/ocr-universal
 
 Content:
 
-nginx
 server {
 
     listen 80;
