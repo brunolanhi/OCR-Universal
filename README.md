@@ -20,6 +20,7 @@ The application supports image files, TIFF/TIF collections, ZIP archives and sea
 - Background job processing
 - Progress tracking
 - Automatic cleanup
+- Dynamic Tesseract language detection
 - Downloadable result packages
 
 ---
@@ -338,6 +339,36 @@ text
 /status/JOB_ID
 
 ---
+## OCR Languages
+
+OCR Universal automatically detects installed Tesseract language packs.
+
+To list installed languages:
+
+bash
+
+tesseract --list-langs
+
+To install additional languages:
+
+bash
+
+apt install tesseract-ocr-deu
+
+Available examples:
+
+bash
+
+apt install tesseract-ocr-por
+apt install tesseract-ocr-eng
+apt install tesseract-ocr-ita
+apt install tesseract-ocr-spa
+apt install tesseract-ocr-fra
+apt install tesseract-ocr-deu
+apt install tesseract-ocr-rus
+apt install tesseract-ocr-jpn
+
+After installation, languages automatically appear in the OCR Universal interface without code changes.
 
 # brunolanhi
 
