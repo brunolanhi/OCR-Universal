@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+<meta charset="utf-8">
+<title>OCR Universal</title>
+
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    background:#f5f5f5;
+    margin:0;
+    padding:0;
+}
+
+.container{
+    width:800px;
+    margin:50px auto;
+    background:#ffffff;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,.15);
+    padding:30px;
+}
+
+h1{
+    margin-top:0;
+    color:#1f4e79;
+}
+
+label{
+    font-weight:bold;
+}
+
+input,
+select{
+    margin-top:5px;
+    margin-bottom:20px;
+}
+
+.botao{
+    background:#1f4e79;
+    color:white;
+    border:none;
+    padding:12px 25px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.botao:hover{
+    background:#163a59;
+}
+
+.info{
+    color:#666;
+    margin-bottom:20px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>OCR Universal</h1>
+
+<p class="info">
+PDF • TIFF • JPG • PNG • BMP • ZIP
+</p>
+
+<form
+action="/upload"
+method="post"
+enctype="multipart/form-data">
+
+<label>Arquivo</label><br>
+
+<input
+type="file"
+name="arquivo"
+required>
+
+<br>
+
+<label>Idioma</label><br>
+
+<select name="idioma">
+
+<option value="por">Português</option>
+<option value="ita">Italiano</option>
+<option value="eng">Inglês</option>
+<option value="spa">Espanhol</option>
+<option value="fra">Francês</option>
+
+</select>
+
+<br>
+
+<input
+type="submit"
+value="Converter"
+class="botao">
+
+</form>
+
+<hr>
+
+<h2>Últimos Processamentos</h2>
+
+<table style="width:100%; border-collapse:collapse;">
+
+{% for job in jobs %}
+
+<tr>
+
+<td style="padding:6px;">
+{{ job.data }} - {{ job.nome }}
+</td>
+
+<td style="width:180px; text-align:right; padding:10px;">
+
+<a href="/download/{{ job.nome[:-4] }}" 
+class="botao" 
+style="text-decoration:none; display:inline-block;">Baixar</a>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+<br>
+
+<p>
+<a href="/jobs"
+class="botao"
+style="text-decoration:none; display:inline-block;">Ver todos os processamentos</a>
+
+</p>
+
+</div>
+
+</body>
+
+</html>
